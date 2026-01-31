@@ -37,15 +37,15 @@ local ConfigObjects = {}
 
 -- SFX 
 local Sounds = {
-    Hover = "rbxassetid://12221966",
-    Click = "rbxassetid://12221967",
-    ToggleOn = "rbxassetid://12221967",
-    ToggleOff = "rbxassetid://12221967",
-    Slide = "rbxassetid://12221967",
-    Notification = "rbxassetid://12222030",
-    Back = "rbxassetid://12221967",
-    Error = "rbxassetid://12221967",
-    Tab = "rbxassetid://12221967" 
+    Hover = "rbxassetid://4510086912",
+    Click = "rbxassetid://4510086561",
+    ToggleOn = "rbxassetid://4510087425",
+    ToggleOff = "rbxassetid://4510087425",
+    Slide = "rbxassetid://4510087798",
+    Notification = "rbxassetid://4590657391",
+    Back = "rbxassetid://4510087236",
+    Error = "rbxassetid://4510087545",
+    Tab = "rbxassetid://4510087056" 
 }
 
 local function PlaySound(id)
