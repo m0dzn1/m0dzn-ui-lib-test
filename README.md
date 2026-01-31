@@ -2,6 +2,10 @@
 
 A sleek, modern, and fully customizable UI Library for Roblox. Features a built-in config system, modern animations, custom themes, and 9 different rainbow modes.
 
+## EXAMPLE
+
+![image alt](https://github.com/m0dzn1/m0dzn-ui-lib-test/blob/cb57b9e9de684354d7d270b10a3b514a315e638f/Example%20Image.png)
+
 ## 🚀 Loading the Library
 
 Copy the script below and paste it into your executor or anything
@@ -149,7 +153,27 @@ Window:Notification("Script by M0dzn")
 
 ## ⚙️ Settings & Customization
 
-The library includes a **Settings Tab** by default with these features:
+The Settings Tab is built-in **automatically.** It allows the user to customize how the UI looks and feels without needing to change the script.
+
+1.Rainbow Edge (Toggle):
+Turns on/off the animated RGB gradient stroke (border) around the UI window.
+
+2.Rainbow Type (Dropdown):
+Changes the animation style of the rainbow.
+Options: Linear Gradient, Animated/Cycling, Smooth Fading, Step/Band, Pulse, Radial, Neon/Glowing, Pastel, Vertical Fade.
+
+3.Theme (Dropdown):
+Instantly changes the entire color scheme of the UI.
+Options: Dark (Default), White, Purple, Blue, Red, Yellow, Green.
+
+4.Menu Keybind (Keybind):
+Allows the user to change the key used to Open/Close the UI (Default is usually RightControl).
+
+4.UI SFX (Toggle):
+Turns the sound effects (Clicks, Hover, Toggle sounds) ON or OFF.
+
+6.Destroy UI (Button):
+Completely removes the UI from the game screen.
 
 ### 🌈 Rainbow Modes (9 Types)
 
@@ -174,9 +198,22 @@ The library includes a **Settings Tab** by default with these features:
 7. **Green**
 
 ### 💾 Config System
+The Config Tab is the save system. It allows users to save their settings (like Auto Farm toggle state, WalkSpeed value, etc.) so they don't have to set them up again every time they execute the script.
+**How it works:**
+Folder System: The script automatically creates a folder in the workspace named after your Window.Title. inside that, it creates a Config folder.
 
-* **Save:** Automatically saves all Toggles, Sliders, Values, and Keybinds.
-* **Load:** Instantly restores saved settings.
-* **Auto-Folder:** Creates a folder in workspace named after your Window Title.
+**Functions:**
+1.Config Name (Textbox):
+Type the name you want to name your save file here (e.g., "LegitSettings" or "RageMode").
 
----
+2.Select Config (Dropdown):
+Shows a list of all saved config files found in the folder.
+
+3.Refresh List (Button):
+Updates the dropdown list (useful if you manually deleted or added a file in the folder).
+
+4.Save Config (Button):
+Saves the current state of all Toggles, Sliders, Keybinds, and Values to the file named in the Textbox.
+
+5.oad Config (Button):
+Reads the selected file from the Dropdown and automatically updates all buttons, sliders, and values to match the saved settings.
