@@ -1,85 +1,28 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/m0dzn1/m0dzn-ui-lib-test/refs/heads/main/m0dzn%20ui%20lib"))()
 
--- Security check to make sure it loaded
-if not Library then 
-    warn("Failed to load library! Check your GitHub raw link.")
-    return 
-end
+if not Library then return end
 
--- 2. Create the Window
 local Window = Library:CreateWindow({
-    Title = "M0dzn Premium Script",
-    Keybind = Enum.KeyCode.M -- Set default keybind to 'M' (User can change later)
+    Title = "TEST",
+    Keybind = Enum.KeyCode.M --This is Clickgui Keybind
 })
 
--- 3. Create Tabs
 local MainTab = Window:Tab("Main")
-local VisualsTab = Window:Tab("Visuals")
 local SettingsTab = Window:Tab("Settings")
 
---// MAIN TAB
-MainTab:Section("Character")
-
-MainTab:Toggle("God Mode", false, function(state)
-    -- This prints to the console (F9) so you know it works
-    print("God Mode is now:", state)
-    Window:Notification("God Mode: " .. tostring(state))
+MainTab:Section("Example")
+MainTab:Button("Click Me", function()
+    Window:Notification("I don't freeze the script anymore!")
 end)
 
-MainTab:Slider("WalkSpeed", 16, 200, 16, function(value)
-    if game.Players.LocalPlayer.Character then
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-    end
-end)
-
-MainTab:Button("Reset Character", function()
-    game.Players.LocalPlayer.Character:BreakJoints()
-    Window:Notification("Character Reset!")
-end)
-
---// VISUALS TAB
-VisualsTab:Section("ESP Settings")
-
-VisualsTab:Toggle("Enable ESP", false, function(v)
-    print("ESP Enabled:", v)
-end)
-
-VisualsTab:Dropdown("ESP Color", {"Red", "Green", "Blue"}, function(selected)
-    print("Selected Color:", selected)
-end)
-
---// SETTINGS TAB (The features you requested)
 SettingsTab:Section("Interface")
 
--- Theme Changer
-SettingsTab:Dropdown("Select Theme", {"Dark", "White", "Purple", "Blue", "Red", "Yellow", "Green"}, function(theme)
-    Library:SetTheme(theme)
+-- NEW KEYBIND ELEMENT
+SettingsTab:Keybind("Clickgui Keybind", Enum.KeyCode.M, function(newKey)
+    Window:SetKeybind(newKey)
+    Window:Notification("Keybind set to: " .. newKey.Name)
 end)
 
--- Rainbow Edge Toggle
-SettingsTab:Toggle("Rainbow Edge", false, function(state)
-    Library:ToggleRainbow(state)
-end)
-
--- Background Image Changer
-SettingsTab:Textbox("Background Image ID", "Paste ID here...", function(id)
-    Window:SetBg(id)
-end)
-
--- Keybind Changer
-SettingsTab:Button("Change Keybind (Click & Press Key)", function()
-    Window:Notification("Press any key to set bind...")
-    local input = game:GetService("UserInputService").InputBegan:Wait()
-    if input.KeyCode.Name ~= "Unknown" then
-        Window:SetKeybind(input.KeyCode)
-        Window:Notification("Keybind set to: " .. input.KeyCode.Name)
-    end
-end)
-
--- Destroy GUI
-SettingsTab:Button("Unload Script (Destroy UI)", function()
+SettingsTab:Button("Destroy UI", function()
     Window:Destroy()
 end)
-
--- Final notification to show it loaded
-Window:Notification("Script Loaded Successfully!")
