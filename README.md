@@ -1,4 +1,4 @@
-*M0DZN UI LIBRARY V1.0*
+# M0DZN UI LIBRARY V1.0
 
 A sleek, modern, and fully customizable UI Library for Roblox. Features a built-in config system, modern animations, custom themes, and 9 different rainbow modes.
 
