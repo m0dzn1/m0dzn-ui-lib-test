@@ -180,11 +180,3 @@ The library includes a **Settings Tab** by default with these features:
 * **Auto-Folder:** Creates a folder in workspace named after your Window Title.
 
 ---
-
-### 📝 Credits
-
-* **Library Creator:** M0dzn
-
-```
-
-```
