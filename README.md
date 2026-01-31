@@ -2,7 +2,7 @@
 
 A sleek, modern, and fully customizable UI Library for Roblox. Features a built-in config system, modern animations, custom themes, and 9 different rainbow modes.
 
- 🚀 Loading the Library
+## 🚀 Loading the Library
 
 Copy the script below and paste it into your executor or anything
 
