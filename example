@@ -1,0 +1,32 @@
+-- 1. Paste the Library Code above here (or load it)
+-- local Library = loadstring(game:HttpGet("..."))() -- if you upload it
+-- OR just paste the big code block above and assign it to "local Library"
+
+-- 2. Create the Window
+local Window = Library:CreateWindow({
+    Title = "My Custom Script",
+    Keybind = Enum.KeyCode.M -- Default keybind
+})
+
+-- 3. Create Tabs
+local MainTab = Window:Tab("Main")
+local SettingsTab = Window:Tab("Settings")
+
+-- 4. Add Elements
+MainTab:Section("Player")
+
+MainTab:Toggle("God Mode", false, function(state)
+    print("God mode is:", state)
+end)
+
+MainTab:Slider("WalkSpeed", 16, 200, 16, function(value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+end)
+
+SettingsTab:Dropdown("Theme", {"Dark", "White", "Purple", "Blue", "Red", "Green"}, function(selected)
+    Library:SetTheme(selected)
+end)
+
+SettingsTab:Toggle("Rainbow Edge", false, function(state)
+    Library:ToggleRainbow(state)
+end)
