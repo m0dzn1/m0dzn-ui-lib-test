@@ -32,6 +32,7 @@ local Library = {}
 local RainbowEnabled = false
 local RainbowType = "Animated/Cycling Rainbow" 
 local SFXEnabled = true
+local MenuKeybind = Enum.KeyCode.RightControl -- Default Menu Key
 local Registry = {} 
 local ConfigObjects = {} 
 
@@ -80,18 +81,23 @@ function Library:ToggleRainbow(bool)
             while RainbowEnabled do
                 local hue = tick() % 5 / 5
                 local color = Color3.fromHSV(hue, 1, 1)
-                -- Simple rainbow loop for Accent objects
                 for obj, prop in pairs(Registry) do
-                    if prop == "BackgroundColor3" and Registry[obj] == "Accent" then
-                        TweenService:Create(obj, TweenInfo.new(0.5), {BackgroundColor3 = color}):Play()
-                    elseif prop == "TextColor3" and Registry[obj] == "Accent" then
-                        TweenService:Create(obj, TweenInfo.new(0.5), {TextColor3 = color}):Play()
+                    if Registry[obj] == "Accent" then
+                        if prop == "BackgroundColor3" then
+                            TweenService:Create(obj, TweenInfo.new(0.5), {BackgroundColor3 = color}):Play()
+                        elseif prop == "TextColor3" then
+                            TweenService:Create(obj, TweenInfo.new(0.5), {TextColor3 = color}):Play()
+                        end
                     end
                 end
                 task.wait(0.1)
             end
         end)
     end
+end
+
+function Library:SetRainbowType(val)
+    RainbowType = val
 end
 
 function Library:SetTheme(themeName)
@@ -113,9 +119,7 @@ function Library:SetTheme(themeName)
 end
 
 local function AddToRegistry(obj, prop, themeKey)
-    Registry[obj] = themeKey -- Store theme key (e.g., "Accent")
-    -- In a real implementation, you would store {Prop = prop, Key = themeKey} but simplified for this fix
-    -- Applying initial color:
+    Registry[obj] = themeKey 
     if CurrentTheme[themeKey] then
         obj[prop] = CurrentTheme[themeKey]
     end
@@ -124,7 +128,6 @@ end
 function Library:CreateWindow(Config)
     local Window = {}
     Window.ConfigFolder = Config.ConfigFolder or "M0DZN_Configs"
-    Window.CurrentConfig = "None"
     
     local MainGui = Instance.new("ScreenGui")
     MainGui.Name = "M0DZN_Lib"
@@ -192,7 +195,6 @@ function Library:CreateWindow(Config)
         ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
         ListLayout.Padding = UDim.new(0, 5)
         
-        -- SECTION
         function Elements:Section(text)
             local SecLabel = Instance.new("TextLabel")
             SecLabel.Size = UDim2.new(1, 0, 0, 25)
@@ -205,7 +207,6 @@ function Library:CreateWindow(Config)
             AddToRegistry(SecLabel, "TextColor3", "Accent")
         end
 
-        -- BUTTON
         function Elements:Button(text, callback)
             local Btn = Instance.new("TextButton")
             Btn.Size = UDim2.new(1, 0, 0, 35)
@@ -225,7 +226,6 @@ function Library:CreateWindow(Config)
             end)
         end
 
-        -- TOGGLE
         function Elements:Toggle(text, default, callback)
             local ToggleFrame = Instance.new("TextButton")
             ToggleFrame.Size = UDim2.new(1, 0, 0, 35)
@@ -270,7 +270,6 @@ function Library:CreateWindow(Config)
             end)
         end
 
-        -- VALUE (FIXED)
         function Elements:Value(text, default, callback)
             local ValFrame = Instance.new("Frame")
             ValFrame.Size = UDim2.new(1,0,0,35)
@@ -301,25 +300,23 @@ function Library:CreateWindow(Config)
             AddToRegistry(ValBox, "BackgroundColor3", "Main")
             AddToRegistry(ValBox, "TextColor3", "Accent")
 
-            -- FIX: Define ConfigObject first
             ConfigObjects[text] = {
                 Type = "Value", 
                 Value = default, 
                 Set = function(val) 
                     ValBox.Text = tostring(val)
-                    if callback then callback(val) end -- FIX: Trigger callback
+                    if callback then callback(val) end
                 end
             }
 
             ValBox.FocusLost:Connect(function()
                 PlaySound(Sounds.Click)
-                ConfigObjects[text].Value = ValBox.Text -- FIX: Update property only
+                ConfigObjects[text].Value = ValBox.Text
                 if callback then callback(ValBox.Text) end
                 Window:Notification(text..": "..ValBox.Text)
             end)
         end
 
-        -- KEYBIND (FIXED)
         function Elements:Keybind(text, default, callback)
             local Key = default or Enum.KeyCode.RightControl
             local Btn = Instance.new("TextButton")
@@ -359,7 +356,7 @@ function Library:CreateWindow(Config)
                 if input.KeyCode.Name ~= "Unknown" then 
                     Key = input.KeyCode
                     KeyLabel.Text = Key.Name
-                    ConfigObjects[text].Value = Key.Name -- FIX: Update property only
+                    ConfigObjects[text].Value = Key.Name
                     if callback then callback(Key) end
                     Window:Notification("Keybind: "..Key.Name)
                 else 
@@ -374,7 +371,6 @@ function Library:CreateWindow(Config)
             end}
         end
 
-        -- DROPDOWN
         function Elements:Dropdown(text, options, callback)
             local DropFrame = Instance.new("Frame")
             DropFrame.Size = UDim2.new(1, 0, 0, 35)
@@ -464,13 +460,30 @@ function Library:CreateWindow(Config)
         task.delay(3, function() Notif:Destroy() end)
     end
     
-    -- CONFIG TAB LOGIC
-    local ConfigTab = Window:Tab("Settings")
+    function Window:SetKeybind(key)
+        MenuKeybind = key
+    end
+
+    function Window:Destroy()
+        MainGui:Destroy()
+    end
+
+    UserInputService.InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if input.KeyCode == MenuKeybind then
+            MainFrame.Visible = not MainFrame.Visible
+            PlaySound(MainFrame.Visible and Sounds.ToggleOn or Sounds.ToggleOff)
+        end
+    end)
     
+    -- SETTINGS TAB (Combined with Configs)
+    local Settings = Window:Tab("Settings")
+    
+    Settings:Section("Configurations")
     local ConfigName = ""
-    ConfigTab:Value("Config Name", "Default", function(v) ConfigName = v end)
+    Settings:Value("Config Name", "Default", function(v) ConfigName = v end)
     
-    ConfigTab:Button("Save Config", function()
+    Settings:Button("Save Config", function()
         if not isfolder(Window.ConfigFolder) then makefolder(Window.ConfigFolder) end
         local Data = {}
         for name, obj in pairs(ConfigObjects) do
@@ -480,7 +493,7 @@ function Library:CreateWindow(Config)
         Window:Notification("Saved: "..ConfigName)
     end)
     
-    ConfigTab:Button("Load Config", function()
+    Settings:Button("Load Config", function()
         local path = Window.ConfigFolder.."/"..ConfigName..".json"
         if isfile(path) then
             local Data = HttpService:JSONDecode(readfile(path))
@@ -494,6 +507,14 @@ function Library:CreateWindow(Config)
             Window:Notification("Config not found!")
         end
     end)
+    
+    Settings:Section("UI Customization")
+    Settings:Toggle("Rainbow Edge", false, function(v) Library:ToggleRainbow(v) end)
+    Settings:Dropdown("Rainbow Type", {"Linear Gradient", "Animated/Cycling Rainbow", "Smooth Fading", "Pulse"}, function(val) Library:SetRainbowType(val) end)
+    Settings:Dropdown("Theme", {"Dark", "White", "Purple", "Blue", "Red", "Yellow", "Green"}, function(v) Library:SetTheme(v) end)
+    Settings:Keybind("Menu Keybind", MenuKeybind, function(v) Window:SetKeybind(v) end)
+    Settings:Toggle("UI SFX", true, function(v) SFXEnabled = v end)
+    Settings:Button("Destroy UI", function() Window:Destroy() end)
     
     return Window
 end
